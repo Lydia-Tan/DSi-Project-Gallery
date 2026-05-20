@@ -30,27 +30,6 @@
     <!-- DS UNIT -->
     <div class="ds-stage" id="dsStage">
       <div class="ds-unit" id="dsUnit">
-
-        <!-- ═══════════════════════════════════════════
-             CLOSED STATE
-             Shown by default; hidden when cartridge inserted.
-             Accurate DS Lite closed form: a smooth, wide, pill-shaped
-             slab. Hinge bump runs along the top edge. No screens,
-             no buttons visible — just the clean back/lid surface.
-
-             STICKERS go inside #dsClosedSlab below.
-             Each .ds-sticker is absolutely positioned relative
-             to that element (the slab face).
-
-             STICKER SIZING GUIDE (slab is ~520px wide × ~155px tall):
-               • Small  — 36px–54px wide/tall  → icons, stars, tiny decals
-               • Medium — 56px–80px wide/tall  → most stickers, clusters
-               • Large  — 82px–110px wide/tall → hero stickers
-             Rectangular stickers can use mismatched width/height.
-             Use PNG with transparency. Rotate with rotate(Ndeg).
-             Stack with z-index (higher = on top). Some can bleed
-             slightly outside the slab — the slab has overflow:visible.
-        ═══════════════════════════════════════════ -->
         <div class="ds-closed" id="dsClosed">
 
           <!-- Hinge ridge along the top -->
@@ -75,44 +54,12 @@
             <div class="ds-closed-side-detail left"></div>
             <!-- Side detail: cartridge slot hint (right edge) -->
             <div class="ds-closed-side-detail right"></div>
-
-            <!--
-            ═══════════════════════════════════
-            ADD YOUR STICKERS HERE.
-            Copy and paste a block below for each sticker.
-            Adjust top/left/right/bottom, width, height, rotate, z-index.
-
-            Example — small star sticker, top-left:
-            <div class="ds-sticker" style="width:46px;height:46px;top:18px;left:38px;transform:rotate(-14deg);z-index:22;">
-              <img src="stickers/star.png" alt="">
-            </div>
-
-            Example — medium sticker overlapping, shifted right:
-            <div class="ds-sticker" style="width:70px;height:70px;top:30px;left:70px;transform:rotate(7deg);z-index:21;">
-              <img src="stickers/flower.png" alt="">
-            </div>
-
-            Example — large sticker, lower-right corner:
-            <div class="ds-sticker" style="width:96px;height:96px;bottom:10px;right:30px;transform:rotate(12deg);z-index:20;">
-              <img src="stickers/butterfly.png" alt="">
-            </div>
-            ═══════════════════════════════════
-            -->
-
           </div>
 
           <!-- Bottom edge strip (thicker lower lip of the clamshell) -->
           <div class="ds-closed-bottom-lip"></div>
 
         </div>
-        <!-- /CLOSED STATE -->
-
-
-        <!-- ═══════════════════════════════════════════
-             OPEN STATE
-             Hidden by default; shown when cartridge inserted.
-             JS adds/removes the `visible` class.
-        ═══════════════════════════════════════════ -->
         <div class="ds-open" id="dsOpen" style="display:none;">
 
           <!-- Shoulder buttons only visible when open -->

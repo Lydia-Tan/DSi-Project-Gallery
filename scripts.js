@@ -23,7 +23,12 @@ const projects = [
     tag: "Interactive Art",
     year: "2025",
     desc: "Designed and ran a pop-up where I drew strangers in real time, giving them a hand-drawn 'photo booth' portrait. I wanted to create a playful experience for people where they can take home something handmade and personal. The next day I had my first taste of virality: 6.8M views and 592K likes on Twitter of people discovering my art account, resulting in over 1k+ followers overnight.",
-    details: ["LINKS: MY ART, THE VIRAL POST","PHOTOS: 'PRINTED'", "BOGOS: BINTED"],
+    details: [
+      "PHOTOS: 'PRINTED",
+      "BOGOS: BINTED",
+      { label: "SEE MORE OF MY ART ↗", url: "https://www.instagram.com/lyd.tart/" },
+      {label: "THE VIRAL POST ↗", url: "https://x.com/sexylesbianbf/status/1924329089026134041"}
+    ],
     cartBg: ["#ffd8a8", "#ffeecc"],
     cartAccent: "#cc6600",
     labelBg: ["#fff0cc", "#ffe4a0"],
@@ -44,7 +49,13 @@ const projects = [
     tag: "Frontend Web Dev",
     year: "2024",
     desc: "Built a website for lovebugs to ask the very essential question: 'Will you be my valentine?' It was designed and coded from scratch with a very subtle, silly twist. Focused on making something that was simple yet humorous.",
-    details: ["BUILT WITH: HTML/CSS/JS", "VALENTINE: SECURED"],
+    details: [
+      "BUILT WITH · HTML, CSS, JS",
+      "FOCUS · INTERACTION + FEEL",
+      "TYPE · PERSONAL PROJECT",
+      { label: "TRY IT YOURSELF ↗", url: "https://lydia-tan.github.io/be_mine/" }
+    ],
+    // details: ["BUILT WITH: HTML/CSS/JS", "VALENTINE: SECURED"],
     cartBg: ["#ffd8a8", "#ffeecc"],
     cartAccent: "#cc6600",
     labelBg: ["#fff0cc", "#ffe4a0"],
@@ -273,7 +284,13 @@ function loadProject(p) {
   bcTitle.textContent = p.title;
   bcTag.textContent = p.tag + ' · ' + p.year;
   bcDesc.textContent = p.desc;
-  bcMeta.innerHTML = p.details.map(d => `▸ ${d}`).join('<br>');
+  // bcMeta.innerHTML = p.details.map(d => `▸ ${d}`).join('<br>');
+  bcMeta.innerHTML = p.details.map(d => {
+    if (typeof d === 'object' && d.url) {
+      return `▸ <a href="${d.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">${d.label}</a>`;
+    }
+    return `▸ ${d}`;
+  }).join('<br>');
   bottomIdle.style.display = 'none';
   bottomContent.classList.add('visible');
   buildGallery(p);
@@ -330,37 +347,6 @@ function buildGallery(p) {
     img.src = src;
     slide.appendChild(img);
   });
-
-  // slides.forEach((img, i) => {
-  //   const slide = document.createElement('div');
-  //   slide.className = 'gallery-slide' + (i === 0 ? ' active' : '');
-
-  //   if (img.url) {
-  //     slide.innerHTML = `<img class="slide-img" src="${img.url}" alt="">`;
-  //   } else {
-  //     slide.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
-  //       <defs>
-  //         <radialGradient id="rg${i}" cx="50%" cy="50%" r="50%">
-  //           <stop offset="0%" stop-color="${img.bg}" stop-opacity="1"/>
-  //           <stop offset="100%" stop-color="${lighten(img.bg, -15)}" stop-opacity="1"/>
-  //         </radialGradient>
-  //       </defs>
-  //       <rect width="320" height="200" fill="url(#rg${i})"/>
-  //       <circle cx="160" cy="100" r="55" fill="none" stroke="${img.accent}" stroke-width="1.5" opacity="0.35"/>
-  //       <circle cx="160" cy="100" r="32" fill="${img.accent}" opacity="0.1"/>
-  //       <circle cx="160" cy="100" r="10" fill="${img.accent}" opacity="0.2"/>
-  //       <text x="160" y="104" font-family="'Fredoka One',cursive" font-size="11" fill="${img.accent}" opacity="0.6" text-anchor="middle" letter-spacing="3">${img.text}</text>
-  //       <text x="160" y="120" font-family="Nunito,sans-serif" font-size="7" fill="${img.accent}" opacity="0.4" text-anchor="middle" letter-spacing="1" font-weight="700">[ ADD YOUR IMAGE HERE ]</text>
-  //     </svg>`;
-  //   }
-
-  //   imageGallery.insertBefore(slide, galleryPrev);
-
-  //   const dot = document.createElement('button');
-  //   dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
-  //   dot.addEventListener('click', () => goToSlide(i));
-  //   galleryDots.appendChild(dot);
-  // });
 }
 
 function changeSlide(dir) {
@@ -407,12 +393,3 @@ function ejectCartridge() {
 
   activeIndex = null;
 }
-
-// // ── UTILITY ──
-// function lighten(hex, amt) {
-//   const n = parseInt(hex.replace('#', ''), 16);
-//   const r = Math.max(0, Math.min(255, (n >> 16) + amt));
-//   const g = Math.max(0, Math.min(255, ((n >> 8) & 0xff) + amt));
-//   const b = Math.max(0, Math.min(255, (n & 0xff) + amt));
-//   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
-// }
