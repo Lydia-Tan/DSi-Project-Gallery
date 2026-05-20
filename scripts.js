@@ -29,9 +29,15 @@ const projects = [
     labelBg: ["#fff0cc", "#ffe4a0"],
     labelText: "#7a3a00",
     images: [
-      { placeholder: true, bg: "#fce0b0", accent: "#cc6600", text: "THERMAL I" },
-      { placeholder: true, bg: "#f8d4a0", accent: "#bb5500", text: "THERMAL II" },
-    ]
+      "imgs/photobooth/0.jpg",
+      "imgs/photobooth/1.jpg",
+      "imgs/photobooth/2.jpg",
+      "imgs/photobooth/3.jpg",
+      "imgs/photobooth/4.jpg",
+      "imgs/photobooth/5.jpg",
+      "imgs/photobooth/6.jpg",
+    ],
+
   },
   {
     title: "VALENTINE'S DAY WEBSITE",
@@ -44,9 +50,8 @@ const projects = [
     labelBg: ["#fff0cc", "#ffe4a0"],
     labelText: "#7a3a00",
     images: [
-      { placeholder: true, bg: "#fce0b0", accent: "#cc6600", text: "THERMAL I" },
-      { placeholder: true, bg: "#f8d4a0", accent: "#bb5500", text: "THERMAL II" },
-    ]
+      "imgs/valentines/valentine.gif",
+    ],
   },
   {
     title: "IPOD CLASSIC MOD",
@@ -59,9 +64,10 @@ const projects = [
     labelBg: ["#d0f8e4", "#b4f0cc"],
     labelText: "#0a5a2a",
     images: [
-      { placeholder: true, bg: "#c4f0d8", accent: "#1a8a4a", text: "GRID POEMS I" },
-      { placeholder: true, bg: "#b4e8c8", accent: "#148040", text: "GRID POEMS II" },
-    ]
+      "imgs/ipodmod/0.jpg",
+      "imgs/ipodmod/1.jpg",
+      "imgs/ipodmod/2.jpg",
+    ],
   },
   {
     title: "CUSTOM OCTOPUS RING",
@@ -74,9 +80,16 @@ const projects = [
     labelBg: ["#c4fcf8", "#a8f4ee"],
     labelText: "#006655",
     images: [
-      { placeholder: true, bg: "#b8f8f4", accent: "#009988", text: "FREQUENCY I" },
-      { placeholder: true, bg: "#a8f4f0", accent: "#008877", text: "FREQUENCY II" },
-    ]
+      "imgs/jewelrymaking/0.jpg",
+      "imgs/jewelrymaking/1.jpg",
+      "imgs/jewelrymaking/2.jpg",
+      "imgs/jewelrymaking/3.jpg",
+      "imgs/jewelrymaking/4.jpg",
+      "imgs/jewelrymaking/5.jpg",
+      "imgs/jewelrymaking/6.jpg",
+      "imgs/jewelrymaking/7.jpg",
+      "imgs/jewelrymaking/8.jpg",
+    ],
   },
   {
     title: "TAMAGOTCHI BAG HOOK",
@@ -89,10 +102,12 @@ const projects = [
     labelBg: ["#d0eeff", "#b8dcf8"],
     labelText: "#1a4a7a",
     images: [
-      { placeholder: true, bg: "#c0dcf4", accent: "#2a78bc", text: "VOID ATLAS I" },
-      { placeholder: true, bg: "#b0d0ec", accent: "#1a68ac", text: "VOID ATLAS II" },
-      { placeholder: true, bg: "#c8e4f8", accent: "#3a88cc", text: "VOID ATLAS III" },
-    ]
+      "imgs/tamagotchi/0.jpg",
+      "imgs/tamagotchi/1.jpg",
+      "imgs/tamagotchi/2.jpg",
+      "imgs/tamagotchi/3.jpg",
+      "imgs/tamagotchi/4.jpg",
+    ],
   },
   {
     title: "PERSIMMON PILLOW",
@@ -105,10 +120,10 @@ const projects = [
     labelBg: ["#f4f8fc", "#e8eef8"],
     labelText: "#3a5a7a",
     images: [
-      { placeholder: true, bg: "#eef2f8", accent: "#6688aa", text: "SALT FLAT I" },
-      { placeholder: true, bg: "#e8ecf4", accent: "#5a7898", text: "SALT FLAT II" },
-      { placeholder: true, bg: "#f0f4fa", accent: "#7898b8", text: "SALT FLAT III" },
-    ]
+      "imgs/persimmon/0.jpg",
+      "imgs/persimmon/1.jpg",
+      "imgs/persimmon/2.jpg",
+    ],
   },
   {
     title: "SKETCHBOOK/ART STUDIES",
@@ -121,9 +136,11 @@ const projects = [
     labelBg: ["#f0dcff", "#e4c8f8"],
     labelText: "#5a2a8a",
     images: [
-      { placeholder: true, bg: "#ecdcf8", accent: "#8840cc", text: "MINOR KEY I" },
-      { placeholder: true, bg: "#e4d0f4", accent: "#7830bc", text: "MINOR KEY II" },
-    ]
+      "imgs/sketchbook/0.jpg",
+      "imgs/sketchbook/1.jpg",
+      "imgs/sketchbook/2.jpg",
+      "imgs/sketchbook/3.jpg",
+    ],
   },
 ];
 
@@ -173,6 +190,7 @@ const bootBar     = document.getElementById('bootBar');
 const bootTitle   = document.getElementById('bootTitle');
 const bootSub     = document.getElementById('bootSub');
 const imageGallery  = document.getElementById('imageGallery');
+const galleryTrack  = document.getElementById('galleryTrack');
 const galleryDots   = document.getElementById('galleryDots');
 const galleryPrev   = document.getElementById('galleryPrev');
 const galleryNext   = document.getElementById('galleryNext');
@@ -192,8 +210,26 @@ galleryNext.addEventListener('click', () => changeSlide(1));
 ejectBtn.addEventListener('click', ejectCartridge);
 
 // ── CARTRIDGE LOGIC ──
+
+// Each insertCartridge call gets its own session object. Every async step
+// checks session.cancelled, so clicking a new cartridge at any point during
+// the boot sequence always stops the old one cleanly.
+let currentSession = null;
+
 function insertCartridge(index, el) {
   if (activeIndex === index) return;
+
+  // Cancel the previous boot at whatever stage it is currently in.
+  if (currentSession) currentSession.cancelled = true;
+  const session = { cancelled: false };
+  currentSession = session;
+
+  // Hide gallery and reset boot UI immediately.
+  imageGallery.style.display = 'none';
+  bootScreen.classList.remove('visible');
+  bootBar.style.transition = 'none';
+  bootBar.style.width = '0%';
+
   if (activeIndex !== null) {
     grid.children[activeIndex].classList.remove('active');
   }
@@ -209,33 +245,28 @@ function insertCartridge(index, el) {
   // Swap closed → open
   dsClosed.style.display = 'none';
   dsOpen.style.display = 'flex';
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      dsOpen.classList.add('visible');
-    });
-  });
+  requestAnimationFrame(() => requestAnimationFrame(() => dsOpen.classList.add('visible')));
 
   setTimeout(() => {
+    if (session.cancelled) return;
     powerLed.classList.add('on');
     screenOff.classList.add('hidden');
     bootTitle.textContent = p.title;
     bootSub.textContent = p.tag + ' · ' + p.year;
     bootScreen.classList.add('visible');
-    animateBoot(() => {
-      bootScreen.classList.remove('visible');
-      loadProject(p);
-    });
-  }, 280);
-}
 
-function animateBoot(cb) {
-  bootBar.style.transition = 'none';
-  bootBar.style.width = '0%';
-  setTimeout(() => {
-    bootBar.style.transition = 'width 1.5s cubic-bezier(0.4,0,0.6,1)';
-    bootBar.style.width = '100%';
-    setTimeout(cb, 1700);
-  }, 60);
+    setTimeout(() => {
+      if (session.cancelled) return;
+      bootBar.style.transition = 'width 1.5s cubic-bezier(0.4,0,0.6,1)';
+      bootBar.style.width = '100%';
+
+      setTimeout(() => {
+        if (session.cancelled) return;
+        bootScreen.classList.remove('visible');
+        loadProject(p);
+      }, 1700);
+    }, 60);
+  }, 280);
 }
 
 function loadProject(p) {
@@ -246,44 +277,90 @@ function loadProject(p) {
   bottomIdle.style.display = 'none';
   bottomContent.classList.add('visible');
   buildGallery(p);
+  // Reveal gallery only after boot is done so it never covers the boot screen.
+  imageGallery.style.display = '';
 }
 
-function buildGallery(p) {
-  imageGallery.querySelectorAll('.gallery-slide').forEach(s => s.remove());
-  galleryDots.innerHTML = '';
-  slides = p.images;
-  currentSlide = 0;
+let galleryToken = 0;
 
-  slides.forEach((img, i) => {
+function buildGallery(p) {
+  const myToken = ++galleryToken;
+  galleryTrack.innerHTML = '';
+  galleryDots.innerHTML = '';
+  currentSlide = 0;
+  slides = p.images || [];
+
+  if (slides.length === 0) {
+    const slide = document.createElement('div');
+    slide.className = 'gallery-slide active';
+    slide.innerHTML = `<div style="font-family:'Fredoka One',cursive;font-size:0.8rem;color:rgba(0,120,120,0.5);text-align:center;line-height:2;">NO IMAGES YET</div>`;
+    galleryTrack.appendChild(slide);
+    const dot = document.createElement('button');
+    dot.className = 'gallery-dot active';
+    galleryDots.appendChild(dot);
+    return;
+  }
+
+  slides.forEach((src, i) => {
     const slide = document.createElement('div');
     slide.className = 'gallery-slide' + (i === 0 ? ' active' : '');
-
-    if (img.url) {
-      slide.innerHTML = `<img class="slide-img" src="${img.url}" alt="">`;
-    } else {
-      slide.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="rg${i}" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="${img.bg}" stop-opacity="1"/>
-            <stop offset="100%" stop-color="${lighten(img.bg, -15)}" stop-opacity="1"/>
-          </radialGradient>
-        </defs>
-        <rect width="320" height="200" fill="url(#rg${i})"/>
-        <circle cx="160" cy="100" r="55" fill="none" stroke="${img.accent}" stroke-width="1.5" opacity="0.35"/>
-        <circle cx="160" cy="100" r="32" fill="${img.accent}" opacity="0.1"/>
-        <circle cx="160" cy="100" r="10" fill="${img.accent}" opacity="0.2"/>
-        <text x="160" y="104" font-family="'Fredoka One',cursive" font-size="11" fill="${img.accent}" opacity="0.6" text-anchor="middle" letter-spacing="3">${img.text}</text>
-        <text x="160" y="120" font-family="Nunito,sans-serif" font-size="7" fill="${img.accent}" opacity="0.4" text-anchor="middle" letter-spacing="1" font-weight="700">[ ADD YOUR IMAGE HERE ]</text>
-      </svg>`;
-    }
-
-    imageGallery.insertBefore(slide, galleryPrev);
+    galleryTrack.appendChild(slide);
 
     const dot = document.createElement('button');
     dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
     dot.addEventListener('click', () => goToSlide(i));
     galleryDots.appendChild(dot);
+
+    const img = document.createElement('img');
+    img.alt = src;
+    // Default to contain — shows the full image centred without cropping.
+    // Switch to cover only if the image is wide enough to fill the screen
+    // without heavy cropping (ratio close to or wider than the screen).
+    img.className = 'slide-img slide-img--contain';
+    img.onload = () => {
+      if (myToken !== galleryToken) return;
+      const SCREEN_RATIO = 4 / 2.8;
+      const imgRatio = img.naturalWidth / img.naturalHeight;
+      // Use cover only when the image ratio is within 25% of the screen ratio
+      // (landscape-ish images that won't lose much to cropping).
+      if (imgRatio >= SCREEN_RATIO * 0.75) {
+        img.classList.remove('slide-img--contain');
+      }
+    };
+    img.src = src;
+    slide.appendChild(img);
   });
+
+  // slides.forEach((img, i) => {
+  //   const slide = document.createElement('div');
+  //   slide.className = 'gallery-slide' + (i === 0 ? ' active' : '');
+
+  //   if (img.url) {
+  //     slide.innerHTML = `<img class="slide-img" src="${img.url}" alt="">`;
+  //   } else {
+  //     slide.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+  //       <defs>
+  //         <radialGradient id="rg${i}" cx="50%" cy="50%" r="50%">
+  //           <stop offset="0%" stop-color="${img.bg}" stop-opacity="1"/>
+  //           <stop offset="100%" stop-color="${lighten(img.bg, -15)}" stop-opacity="1"/>
+  //         </radialGradient>
+  //       </defs>
+  //       <rect width="320" height="200" fill="url(#rg${i})"/>
+  //       <circle cx="160" cy="100" r="55" fill="none" stroke="${img.accent}" stroke-width="1.5" opacity="0.35"/>
+  //       <circle cx="160" cy="100" r="32" fill="${img.accent}" opacity="0.1"/>
+  //       <circle cx="160" cy="100" r="10" fill="${img.accent}" opacity="0.2"/>
+  //       <text x="160" y="104" font-family="'Fredoka One',cursive" font-size="11" fill="${img.accent}" opacity="0.6" text-anchor="middle" letter-spacing="3">${img.text}</text>
+  //       <text x="160" y="120" font-family="Nunito,sans-serif" font-size="7" fill="${img.accent}" opacity="0.4" text-anchor="middle" letter-spacing="1" font-weight="700">[ ADD YOUR IMAGE HERE ]</text>
+  //     </svg>`;
+  //   }
+
+  //   imageGallery.insertBefore(slide, galleryPrev);
+
+  //   const dot = document.createElement('button');
+  //   dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+  //   dot.addEventListener('click', () => goToSlide(i));
+  //   galleryDots.appendChild(dot);
+  // });
 }
 
 function changeSlide(dir) {
@@ -291,7 +368,7 @@ function changeSlide(dir) {
 }
 
 function goToSlide(n) {
-  const allSlides = imageGallery.querySelectorAll('.gallery-slide');
+  const allSlides = galleryTrack.querySelectorAll('.gallery-slide');
   const allDots = galleryDots.querySelectorAll('.gallery-dot');
   allSlides[currentSlide].classList.remove('active');
   allDots[currentSlide].classList.remove('active');
@@ -308,7 +385,7 @@ function ejectCartridge() {
   setTimeout(() => el.classList.remove('ejecting'), 450);
 
   bottomContent.classList.remove('visible');
-  imageGallery.querySelectorAll('.gallery-slide').forEach(s => s.remove());
+  galleryTrack.innerHTML = '';
   galleryDots.innerHTML = '';
 
   setTimeout(() => {
@@ -331,11 +408,11 @@ function ejectCartridge() {
   activeIndex = null;
 }
 
-// ── UTILITY ──
-function lighten(hex, amt) {
-  const n = parseInt(hex.replace('#', ''), 16);
-  const r = Math.max(0, Math.min(255, (n >> 16) + amt));
-  const g = Math.max(0, Math.min(255, ((n >> 8) & 0xff) + amt));
-  const b = Math.max(0, Math.min(255, (n & 0xff) + amt));
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
-}
+// // ── UTILITY ──
+// function lighten(hex, amt) {
+//   const n = parseInt(hex.replace('#', ''), 16);
+//   const r = Math.max(0, Math.min(255, (n >> 16) + amt));
+//   const g = Math.max(0, Math.min(255, ((n >> 8) & 0xff) + amt));
+//   const b = Math.max(0, Math.min(255, (n & 0xff) + amt));
+//   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+// }
